@@ -115,9 +115,18 @@ COPY conf /
 COPY --from=build /opt /opt
 
 
+# Allow container to run as arbitrary uid
+RUN mkdir -p /crypto /var/run/nginx
+RUN chmod -R a+rwx /etc/service /var/log \
+  /opt/graphite/storage /opt/graphite/webapp /opt/graphite/lib \
+  /var/run/nginx /var/lib/nginx /var/tmp \
+  /crypto
+
+
 # defaults
-EXPOSE 80 2003-2004 2013-2014 2023-2024 8080 8125 8125/udp 8126
+EXPOSE 2443 2003-2004 2013-2014 2023-2024 8080 8125 8125/udp 8126
 VOLUME ["/opt/graphite/conf", "/opt/graphite/storage", "/opt/graphite/webapp/graphite/functions/custom", "/etc/nginx", "/opt/statsd/config", "/etc/logrotate.d", "/var/log", "/var/lib/redis"]
+VOLUME ["/crypto"]
 
 STOPSIGNAL SIGHUP
 
